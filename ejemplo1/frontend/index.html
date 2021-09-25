@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Datos personales</title>
+    </head>
+    <body>
+        <form>
+        <label>Nombre</label>
+        <input name="nombre" id="nombre" />
+        <label>Direccion</label>
+        <input name="direccion" id="direccion" />
+        </form>
+    </body>
+    <script type="text/javascript">
+        fetch('http://localhost:3000')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("nombre").value = data.nombre;
+                document.getElementById("direccion").value = data.direccion;
+            });
+    </script>
+</html>
