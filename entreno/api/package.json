@@ -1,0 +1,22 @@
+{
+  "name": "entreno-api",
+  "version": "1.0.0",
+  "description": "Api para aplicacion de entrenamiento",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "entreno",
+    "entrenamiento"
+  ],
+  "author": "Anibal Schiaves",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.5.1",
+    "express": "^4.7.1",
+    "method-override": "^2.1.2",
+    "mongoose": "^6.0.8"
+  }
+}
