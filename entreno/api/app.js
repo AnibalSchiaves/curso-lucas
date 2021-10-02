@@ -15,7 +15,9 @@ router.route("/ejercicios")
     .get(ejerciciosController.findAll)
     .post(ejerciciosController.create);
 router.route("/ejercicios/:id")
-    .get(ejerciciosController.findById);
+    .get(ejerciciosController.findById)
+    .put(ejerciciosController.update)
+    .delete(ejerciciosController.delete);
 
 app.use(router);
 

@@ -245,6 +245,88 @@ mongoose.connect("mongodb://localhost/entreno", function(err, res) {
 
 Ahora, al levantar la api, podremos realizar las operaciones de POST a la url http://localhost:3000/ejercicios para crear nuevos ejercicios, y los GETs para recuperar todos los ejercicios y un ejercicio puntual a las urls http://localhost:3000/ejercicios y http://localhost:3000/ejercicios/:id respectivamente.
 
+## Lección 3
+
+Ahora vamos a completar nuestro controller de ejercicios para agregar las funiones que nos permitirán realizar actualizaciones y borrados de ejercicios ya creados. Pero previamente a eso vamos a mejorar la función findById para devolver error 404 si no encuentra el ejercicio que se busca. Para ello modificamos la función de la siguiente manera:
+
+```bash
+exports.findById = function(req, res) {
+    modelEjercicio.findById(req.params.id, function(err, ejercicio) {
+        if (err)
+            res.send(500, err.message);
+        if (ejercicio==null) {
+            res.status(404).send("Ejercicio no encontrado");
+        } else {
+            console.log(`obteniendo ejercicio con id ${req.params.id}`);
+            res.status(200).jsonp(ejercicio);
+        }
+    });
+};
+```
+
+A continuación vamos a agregar al final de nuestro archivo ejercicios.js las funciones que nos permitiran realizar actualizaciones y borrados:
+
+```bash
+exports.update = function(req, res) {
+
+    modelEjercicio.findById(req.params.id, function(err, ejercicio) {
+        if (err)
+            res.status(500).jsonp(err.message);
+        if (ejercicio==null) {
+            res.status(404).send("Ejercicio no encontrado");
+        } else {
+            var msg = validate(req.body);
+            if (msg) {
+                res.status(400).send(msg);
+                return
+            }
+            
+            ejercicio.codigo = req.body.codigo;
+            ejercicio.nombre = req.body.nombre;
+            ejercicio.descripcion = req.body.descripcion;
+            
+            ejercicio.save(function (err, ejercicio) {
+                if (err)
+                    res.status(500).send(err.message);
+                console.log(`Actualizando ejercicio con id ${req.params.id}`);
+                res.status(200).jsonp(ejercicio);
+            });
+        }
+    });
+    
+};
+
+exports.delete = function(req, res) {
+
+    modelEjercicio.findById(req.params.id, function(err, ejercicio) {
+        if (err)
+            res.status(500).jsonp(err.message);
+        if (ejercicio==null) {
+            res.status(404).send("Ejercicio no encontrado");
+        } else {
+            ejercicio.remove(function (err) {
+                if (err) {
+                    return res.status(500).send(err.message);
+                } else {
+                    console.log(`Borrando ejercicio con id ${req.params.id}`);
+                    return res.status(200).jsonp(ejercicio);
+                }
+            });
+        }
+    });
+};
+```
+
+Y ahora tenemos que agregar las funciones a la ruta correspondiente en el archivo app.js, para ello modificamos la ruta "/ejercicios/:id" agregando los métodos PUT y DELETE de la siguiente forma:
+
+```bash
+router.route("/ejercicios/:id")
+    .get(ejerciciosController.findById)
+    .put(ejerciciosController.update)
+    .delete(ejerciciosController.delete);
+
+```
+
 ## Referencias
 
 https://carlosazaustre.es/como-crear-una-api-rest-usando-node-js
