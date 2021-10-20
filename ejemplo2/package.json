@@ -1,0 +1,17 @@
+{
+  "name": "ejemplo2",
+  "version": "1.0.0",
+  "description": "ejemplo basico hecho con la libreria mongoose",
+  "main": "app-bien.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mongoose"
+  ],
+  "author": "Anibal Schiaves",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^5.13.10"
+  }
+}
