@@ -4,7 +4,8 @@ var app = express();
 app.get('/', function(req, res) {
     let lucas = {
         "nombre":"lucas",
-        "direccion":"Belgrano 333"
+        "direccion":"Belgrano 333",
+        "apellido" : "Cabrera"
     }
     res.header("Access-Control-Allow-Origin","*");
     res.send(lucas);

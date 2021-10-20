@@ -9,6 +9,8 @@
         <input name="nombre" id="nombre" />
         <label>Direccion</label>
         <input name="direccion" id="direccion" />
+        <label>Apellido</label>
+        <input name="apelldido" id="apellido">
         </form>
     </body>
     <script type="text/javascript">
@@ -17,6 +19,7 @@
             .then(data => {
                 document.getElementById("nombre").value = data.nombre;
                 document.getElementById("direccion").value = data.direccion;
+                document.getElementById("apellido").value = data.apellido;
             });
     </script>
 </html>
