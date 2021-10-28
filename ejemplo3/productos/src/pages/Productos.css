@@ -1,0 +1,13 @@
+.productos {
+    background-color: transparent;
+}
+
+.productos li {
+    display: block;
+    border: 3px #61dafb solid;
+    border-radius: 1em;
+}
+
+.productos li:hover {
+    background-color: transparent;
+}

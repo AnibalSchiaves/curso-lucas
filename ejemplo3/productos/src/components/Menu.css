@@ -1,0 +1,19 @@
+ul {
+    margin: 0;
+    padding: 0;
+    border-radius: 0.5em;
+    background-color:goldenrod;
+}
+ul li {
+    list-style: none;
+    display: inline-block;
+    padding: 1em;
+    
+}
+ul li:hover {
+    background-color: darkgoldenrod;
+}
+ul li a {
+    text-decoration: none;
+    color: black;
+}
