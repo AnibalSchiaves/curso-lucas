@@ -1,4 +1,5 @@
-const Ejercicio = require('./ejercicio');
+const moduleEjercicio = require('./ejercicio');
+const Ejercicio = moduleEjercicio.Ejercicio;
 
 Ejercicio.find({codigo: /^prueba/}, function(err, ejercicios) {
     if (err) {
