@@ -327,8 +327,260 @@ router.route("/ejercicios/:id")
 
 ```
 
+## Lección 4
+
+Ahora continuaremos con las rutas de la api que nos permitirán manipular las sesiones de entrenamiento. Para esto comenzaremos creando el modelo. En la carpeta model creamos el archivo entrenamiento.js con el siguiente código:
+
+```js
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
+
+var ejercicioRealizadoSchema = new Schema({
+    ejercicio: {type: Schema.Types.ObjectId, ref: 'ejercicio'},
+    series: [Number],
+    unidad: {type: String, enum:['Rep','Seg'], default: "Rep"}
+});
+
+ejercicioRealizadoSchema.virtual("volumen").get(function() {
+    var volumen = 0;
+    for (let serie of this.series) {
+        volumen += serie;
+    }
+    return volumen;
+});
+
+ejercicioRealizadoSchema.set('toJSON', {
+    virtuals: true,
+    transform: function (doc, ret) {
+        delete ret._id,
+        delete ret.__v
+    }
+});
+
+var entrenamientoSchema = new Schema({
+    fecha: {type : Date},
+    numero: {type: Number},
+    tipo: {type : String},
+    observacion: {type : String},
+    duracionMinutos: {type : Number},
+    ejercicios: [ ejercicioRealizadoSchema]
+});
+
+entrenamientoSchema.virtual("volumenTotal").get(function() {
+    var total = 0;
+    for (let ejer of this.ejercicios) {
+        total += ejer.volumen;
+    }
+    return total;
+});
+
+entrenamientoSchema.set('toJSON', {
+    virtuals: true,
+    transform: function (doc, ret) {
+        delete ret._id,
+        delete ret.__v
+    }
+});
+
+module.exports = mongoose.model("entrenamiento", entrenamientoSchema);
+```
+
+Algunas cuestiones a destacar con respecto a este modelo son:
+
+
+a- el atributo ejercicio en ejercicioRealizadoSchema fue definido con el tipo Schema.Types.ObjectId y al atributo ref con el valor 'ejercicio' para que sea un atributo que tenga una referencia a una instancia del modelo de ejercicio.
+
+
+b- se definieron atributos virtuales a través de la función virtual() de los correspondientes schemas, de esta forma podemos definir atributos calculados que no se almacenan en mongodb.
+
+
+c- se parametriza algunos aspectos de la función toJSON de los modelos. Esta función es la que convierte las instancias de los modelos en objetos json. Indicando virtuals en true hacemos que se lleven los atributos calculados al objeto json (y por ende a las respuestas de la api) y con la definición de la función transforms indicamos que no se transladen los atributos _id y __v a los json de respuesta.
+
+
+Lo mencionado en el punto c también lo reflejaremos en el modelo de ejercicio, para ello agregamos el siguiente código en el archivo ejercicio.js:
+
+
+```js
+ejercicioSchema.set('toJSON', {
+    virtuals: true,
+    transform: function (doc, ret) {
+        delete ret._id,
+        delete ret.__v
+    }
+});
+```
+
+
+A continuación seguimos con la creación del controlador que nos permitirá manipular las peticiones relacionadas a los entrenamientos. Para ello creamos el archivo entrenamientos.js dentro de la carpeta controller con el siguiente código:
+
+
+```js
+var modelEntrenamiento = require("../model/entrenamiento");
+
+exports.findAll = function(req, res) {
+    modelEntrenamiento
+        .find({})
+        .populate("ejercicios.ejercicio")
+        .exec(function(err, entrenamientos) {
+            if (err)
+                res.send(500, err.message);
+            console.log("Obteniendo entrenamientos");
+            res.status(200).jsonp(entrenamientos);
+        });
+};
+
+exports.findById = function(req, res) {
+    modelEntrenamiento.findById(req.params.id)
+    .populate("ejercicios.ejercicio")
+    .exec(function(err, entrenamiento) {
+        if (err)
+            res.send(500, err.message);
+        if (entrenamiento==null) {
+            res.status(404).send("Entrenamiento no encontrado");
+        } else {
+            console.log(`obteniendo entrenamiento con id ${req.params.id}`);
+            res.status(200).jsonp(entrenamiento);
+        }
+    });
+};
+
+var validate = (body) => {
+    if (body.fecha==null || body.fecha=='') {
+        return "Debe indicar una fecha";
+    }
+    if (body.numero==null || body.numero=='') {
+        return "Debe indicar el número de entrenamiento";
+    }
+    if (body.tipo==null || body.tipo=='') {
+        return "Debe indicar un tipo de entrenamiento";
+    }
+    if (body.ejercicios==null || body.ejercicios.length==0) {
+        return "Debe indicar los ejercicios realizados";
+    } else {
+        let i = 1;
+        for (const ejer of body.ejercicios) {
+            if (ejer.ejercicio==null || ejer.ejercicio == '') {
+                return `Debe indicar el ejercicio en línea ${i}`;
+            }
+            if (ejer.series==null || ejer.series.length==0) {
+                return `Debe indicar series en línea ${i}`;
+            }
+            if (ejer.unidad==null || ejer.unidad=='') {
+                return `Debe indicar unidad en línea ${i}`;
+            } else if(ejer.unidad!='Rep' && ejer.unidad!='Seg') {
+                return `Debe indicar unidad válida en línea ${i}`;
+            }
+            i++;
+        }
+    }
+}
+
+exports.create = function(req, res) {
+    
+    var msg = validate(req.body);
+    if (msg) {
+        res.status(400).send(msg);
+        return
+    }
+        
+    var entrenamiento = new modelEntrenamiento({
+        fecha: req.body.fecha,
+        numero: req.body.numero,
+        tipo: req.body.tipo,
+        observacion: req.body.observacion,
+        duracionMinutos: req.body.duracionMinutos,
+        ejercicios: req.body.ejercicios
+    });
+
+    entrenamiento.save(function (err, entrenamiento) {
+        if (err)
+            res.status(500).send(err.message);
+        console.log("Creando entrenamiento");
+        res.status(200).jsonp(entrenamiento);
+    });
+};
+
+exports.update = function(req, res) {
+
+    modelEntrenamiento.findById(req.params.id)
+    .populate("ejercicios.ejercicio")
+    .exec(function(err, entrenamiento) {
+        if (err)
+            res.status(500).jsonp(err.message);
+        if (entrenamiento==null) {
+            res.status(404).send("Entrenamiento no encontrado");
+        } else {
+            var msg = validate(req.body);
+            if (msg) {
+                res.status(400).send(msg);
+                return
+            }
+            
+            entrenamiento.numero = req.body.numero;
+            entrenamiento.fecha = req.body.fecha;
+            entrenamiento.tipo = req.body.tipo;
+            entrenamiento.observacion = req.body.observacion;
+            entrenamiento.duracionMinutos = req.body.duracionMinutos;
+            entrenamiento.ejercicios = req.body.ejercicios;
+            
+            entrenamiento.save(function (err, entrenamiento) {
+                if (err)
+                    res.status(500).send(err.message);
+                console.log(`Actualizando entrenamiento con id ${req.params.id}`);
+                res.status(200).jsonp(entrenamiento);
+            });
+        }
+    });
+    
+};
+
+exports.delete = function(req, res) {
+
+    modelEntrenamiento.findById(req.params.id, function(err, entrenamiento) {
+        if (err)
+            res.status(500).jsonp(err.message);
+        if (entrenamiento==null) {
+            res.status(404).send("Entrenamiento no encontrado");
+            return;
+        } else {
+            entrenamiento.remove(function (err) {
+                if (err) {
+                    return res.status(500).send(err.message);
+                } else {
+                    console.log(`Borrando entrenamiento con id ${req.params.id}`);
+                    return res.status(200).jsonp(entrenamiento);
+                }
+            });
+        }
+    });
+};
+```
+
+También aquí tenemos un elemento nuevo, que es el uso del método populate(), a través del cual podemos hacer que nuestro atributo ejercicio se complete con la instancia del ejercicio al cual hace referencia el objectId que almacena.
+
+
+Para finalizar con la lección agregamos las rutas que manejaran las operaciones sobre la entidad entrenamiento. Para ello agregamos al archivo app.js el siguiente código:
+
+
+```js
+var entrenamientosController = require("./controller/entrenamientos");
+
+[...]
+
+router.route("/entrenamientos")
+    .get(entrenamientosController.findAll)
+    .post(entrenamientosController.create);
+router.route("/entrenamientos/:id")
+    .get(entrenamientosController.findById)
+    .put(entrenamientosController.update)
+    .delete(entrenamientosController.delete);
+```
+
+
 ## Referencias
 
 https://carlosazaustre.es/como-crear-una-api-rest-usando-node-js
 
 https://medium.com/williambastidasblog/estructura-de-una-api-rest-con-nodejs-express-y-mongodb-cdd97637b18b
+
+https://mongoosejs.com/docs/5.x/docs/guide.html

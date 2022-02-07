@@ -6,6 +6,7 @@ var mongoose = require("mongoose");
 var app = express();
 var bodyParser = require("body-parser");
 var ejerciciosController = require("./controller/ejercicios");
+var entrenamientosController = require("./controller/entrenamientos");
 
 app.use(bodyParser.json());
 
@@ -18,6 +19,13 @@ router.route("/ejercicios/:id")
     .get(ejerciciosController.findById)
     .put(ejerciciosController.update)
     .delete(ejerciciosController.delete);
+router.route("/entrenamientos")
+    .get(entrenamientosController.findAll)
+    .post(entrenamientosController.create);
+router.route("/entrenamientos/:id")
+    .get(entrenamientosController.findById)
+    .put(entrenamientosController.update)
+    .delete(entrenamientosController.delete);
 
 app.use(router);
 
