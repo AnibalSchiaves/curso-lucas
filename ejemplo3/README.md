@@ -371,9 +371,13 @@ import './Productos.css';
 
 const Productos = () => {
     const [arrayProductos, setProductos] = useState([]);
-    fetch("http://localhost:3001/productos")
-        .then(res => res.json())
-        .then(data => setProductos(data));
+    useEffect(
+        () => {
+            fetch("http://localhost:3001/productos")
+                .then(res => res.json())
+                .then(data => setProductos(data));
+        },[]
+    ); //Debemos usar useEffect para que el fetch no haga que la aplicación entre en loop
     return (
         <>
             <Menu></Menu>
@@ -417,6 +421,25 @@ Tambien creamos el archivo Productos.css para retocar el estilo:
 ```
 
 Si volvemos a ejecutar la aplicación veremos que la página de productos ahora nos mostrará la información de los 3 productos que nos devuelve la api creada previamente.
+
+Ahora, vamos a modificar nuestra llamada a la api para utilizar Axios, que es una librería que simplifica las llamadas a apis. Para esto, en primer lugar, vamos a instalarla:
+
+```bash
+npm install axios
+```
+
+Luego, vamos a retocar nuestro archivo Productos.js haciendo algunas modificaciones. Agregamos el import a axios y reemplazamos el fetch por el método get de axios:
+
+```js
+import axios from 'axios';
+
+...
+
+axios.get("http://localhost:3001/productos")
+        .then(res => setProductos(res.data));
+```
+
+Si volvemos a ajecutar la aplicación comprobaremos que la página de productos seguirá mostrando correctamente los productos que devuelve la api
 
 
 ## Referencias
