@@ -37,7 +37,7 @@ mongoose.connect("mongodb://localhost/entreno", function(err, res) {
     if (err) {
         console.log(`Error conectando a la base de datos entreno. Err: ${err}`);
     }   
-    app.listen(3000, function() {
-        console.log("Api de entreno corriendo en http://localhost:3000");
+    app.listen(3001, function() {
+        console.log("Api de entreno corriendo en http://localhost:3001");
     });
 });
