@@ -7,3 +7,12 @@ table {
 table th, table td {
     border: 1px solid black;
 }
+
+table tfoot {
+    text-align:start;
+}
+
+form input, form textarea {
+    display: block;
+    margin: auto;
+}
