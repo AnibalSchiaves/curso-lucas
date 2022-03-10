@@ -34,7 +34,7 @@ var validate = (body) => {
 }
 
 exports.create = function(req, res) {
-    
+    res.header("Access-Control-Allow-Origin","*");
     var msg = validate(req.body);
     if (msg) {
         res.status(400).send(msg);

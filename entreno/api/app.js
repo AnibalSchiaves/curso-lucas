@@ -4,10 +4,12 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var app = express();
+var cors = require('cors');
 var bodyParser = require("body-parser");
 var ejerciciosController = require("./controller/ejercicios");
 var entrenamientosController = require("./controller/entrenamientos");
 
+app.use(cors());
 app.use(bodyParser.json());
 
 var router = express.Router();
