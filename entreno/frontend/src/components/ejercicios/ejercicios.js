@@ -8,26 +8,29 @@ class Ejercicios extends React.Component {
 
     constructor(...args) {
         super(...args);
-        var nuevo_ejercicio = new Ejercicio();
         this.state = {
             ejercicios : [],
             modo: Ejercicio.MODO_CONSULTA,
-            nuevo: nuevo_ejercicio
         }
+        this.guardar = this.guardar.bind(this);
+        this.consulta = this.consulta.bind(this);
+        this.eliminar = this.eliminar.bind(this);
+        this.editar = this.editar.bind(this);
     }
 
     componentWillMount() {
         this.consulta();
     }
 
-    render_alta() {
+    render_edicion() {
         return (
             <form>
-                <input type="text" id="txtCodigo" name="txtCodigo" placeholder="Ingrese el código" onChange={this.onChange.bind(this)} defaultValue={this.state.nuevo.codigo}></input>
-                <input type="text" id="txtNombre" name="txtNombre" placeholder="Ingrese el nombre" onChange={this.onChange.bind(this)} defaultValue={this.state.nuevo.nombre}></input>
-                <textarea id="txtDescripcion" name="txtDescripcion" placeholder="Ingrese la descripción" onChange={this.onChange.bind(this)} defaultValue={this.state.nuevo.descripcion}></textarea>
-                <button type="button" onClick={this.guardar.bind(this)}>Guardar</button>
-                <button type="button" onClick={this.consulta.bind(this)}>Cancelar</button>
+                <input type="hidden" id="txtId" name="txtId" defaultValue={this.state.current.id}></input>
+                <input type="text" id="txtCodigo" name="txtCodigo" placeholder="Ingrese el código" onChange={this.onChange.bind(this)} defaultValue={this.state.current.codigo}></input>
+                <input type="text" id="txtNombre" name="txtNombre" placeholder="Ingrese el nombre" onChange={this.onChange.bind(this)} defaultValue={this.state.current.nombre}></input>
+                <textarea id="txtDescripcion" name="txtDescripcion" placeholder="Ingrese la descripción" onChange={this.onChange.bind(this)} defaultValue={this.state.current.descripcion}></textarea>
+                <button type="button" onClick={this.guardar}>Guardar</button>
+                <button type="button" onClick={this.consulta}>Cancelar</button>
             </form>
         );
     }
@@ -42,8 +45,8 @@ class Ejercicios extends React.Component {
                             <td>{ej.nombre}</td>
                             <td>{ej.descripcion}</td>
                             <td>
-                                <button>Modificar</button>
-                                <button>Eliminar</button>
+                                <button type="button" data-id={ej.id} onClick={this.editar}>Modificar</button>
+                                <button type="button" data-id={ej.id} onClick={this.eliminar}>Eliminar</button>
                             </td>
                         </tr>
                     )
@@ -76,7 +79,7 @@ class Ejercicios extends React.Component {
                     <tfoot>
                         <tr>
                         <td colSpan={4}>
-                            <button onClick={this.nuevo.bind(this)}>Nuevo</button>                            
+                            <button onClick={this.agregar.bind(this)}>Nuevo</button>                            
                         </td>
                         </tr>
                     </tfoot>
@@ -86,25 +89,63 @@ class Ejercicios extends React.Component {
     }
 
     render() {
-        if (this.state.modo === Ejercicio.MODO_ALTA) {
-            return this.render_alta();
+        if (this.state.modo === Ejercicio.MODO_ALTA
+            || this.state.modo === Ejercicio.MODO_EDICION) {
+            return this.render_edicion();
         } else {
             return this.render_consulta();
         }
     }
 
-    nuevo() {
+    agregar() {
         this.setState({
+            current: new Ejercicio(),
             modo : Ejercicio.MODO_ALTA
         })
     }
 
-    guardar() {
-        axios.post(enviroment.api_url+"ejercicios", this.state.nuevo)
-            .then(res => {
-                    this.consulta();
+    editar(e) {
+        axios.get(enviroment.api_url+"ejercicios/"+e.target.getAttribute("data-id"))
+                .then(res => {
+                    if (res.status===200) {
+                        this.setState({
+                            current: res.data,
+                            modo : Ejercicio.MODO_EDICION
+                        });
+                    } else {
+                        alert("Hubo un error al obtener el ejercicio");
+                    }
                 });
-        
+    }
+
+    guardar() {
+        if (this.state.modo === Ejercicio.MODO_ALTA) {
+            axios.post(enviroment.api_url+"ejercicios", this.state.current)
+                .then(res => {
+                        alert("El ejercicio ha sido guardado");
+                        this.consulta();
+                    });
+        } else if (this.state.modo === Ejercicio.MODO_EDICION) {
+            axios.put(enviroment.api_url+"ejercicios/"+this.state.current.id, this.state.current)
+                .then(res => {
+                        alert("El ejercicio ha sido guardado");
+                        this.consulta();
+                    });
+        }
+    }
+
+    eliminar(e) {
+        if (window.confirm("Esta seguro de eliminar el ejercicio")) {
+            axios.delete(enviroment.api_url+"ejercicios/"+e.target.getAttribute("data-id"))
+                .then(res => {
+                    if (res.status===200) {
+                        alert("El ejercicio ha sido borrado");
+                        this.consulta();
+                    } else {
+                        alert("Hubo un error al borrar el ejercicio");
+                    }
+                });
+        }
     }
 
     consulta() {
@@ -120,7 +161,8 @@ class Ejercicios extends React.Component {
 
     onChange() {
         this.setState({
-            nuevo : {
+            current : {
+                id : document.getElementById("txtId").value,
                 codigo: document.getElementById("txtCodigo").value,
                 nombre: document.getElementById("txtNombre").value,
                 descripcion: document.getElementById("txtDescripcion").value
@@ -132,5 +174,6 @@ class Ejercicios extends React.Component {
 
 Ejercicio.MODO_CONSULTA = "consulta";
 Ejercicio.MODO_ALTA = "alta";
+Ejercicio.MODO_EDICION = "edicion";
 
 export default Ejercicios;
