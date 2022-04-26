@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import Ejercicios from './components/ejercicios/ejercicios';
+import NavBar from './components/navbar/navbar';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 function App() {
   return (
@@ -9,7 +11,14 @@ function App() {
         <h1>Aplicación de Entrenamiento</h1>
       </header>
       <div className="content">
-        <Ejercicios></Ejercicios>
+        <BrowserRouter>
+        <NavBar></NavBar>
+        <Routes>
+          <Route path='/' element={<h2>Bienvenido</h2>}></Route>
+          <Route path="/ejercicios" element={<Ejercicios />}></Route>
+          <Route path='*' element={<h2>No se encontró la página</h2>}></Route>
+        </Routes>
+        </BrowserRouter>
       </div>
     </div>
   );
