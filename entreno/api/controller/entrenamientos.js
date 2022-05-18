@@ -1,8 +1,26 @@
 var modelEntrenamiento = require("../model/entrenamiento");
 
 exports.findAll = function(req, res) {
+    let where = {};
+    if (req.query) {
+        const hoy = new Date();
+        let anio = hoy.getFullYear();
+        if (req.query.anio)
+            anio = req.query.anio;
+        let mes = hoy.getMonth();
+        if (req.query.mes)
+            mes = req.query.mes;
+        const firstDay = new Date(anio,mes-1,1);
+        const lastDay = new Date(anio,mes,0);
+        where = {
+            $and : [
+                {fecha: {$gte:firstDay}},
+                {fecha: {$lte:lastDay}}
+            ]
+        }        
+    }
     modelEntrenamiento
-        .find({})
+        .find(where)
         .populate("ejercicios.ejercicio")
         .exec(function(err, entrenamientos) {
             if (err)
