@@ -8,6 +8,7 @@ export default function NavBar() {
             <ul>
                 <li><NavLink to="/">Home</NavLink></li>
                 <li><NavLink to="/ejercicios">Ejercicios</NavLink></li>
+                <li><NavLink to="/entrenamientos">Entrenamientos</NavLink></li>
             </ul>
         </nav>
     );
