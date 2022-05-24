@@ -7,7 +7,7 @@ exports.findAll = function(req, res) {
         let anio = hoy.getFullYear();
         if (req.query.anio)
             anio = req.query.anio;
-        let mes = hoy.getMonth();
+        let mes = hoy.getMonth()+1;
         if (req.query.mes)
             mes = req.query.mes;
         const firstDay = new Date(anio,mes-1,1);

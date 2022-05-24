@@ -23,7 +23,8 @@ class Ejercicios extends React.Component {
     }
 
     render_edicion() {
-        return (
+        return (<>
+            <h2>Mantenimiento de Ejercicios</h2>
             <form>
                 <input type="hidden" id="txtId" name="txtId" defaultValue={this.state.current.id}></input>
                 <input type="text" id="txtCodigo" name="txtCodigo" placeholder="Ingrese el código" onChange={this.onChange.bind(this)} defaultValue={this.state.current.codigo}></input>
@@ -32,7 +33,7 @@ class Ejercicios extends React.Component {
                 <button type="button" onClick={this.guardar}>Guardar</button>
                 <button type="button" onClick={this.consulta}>Cancelar</button>
             </form>
-        );
+        </>);
     }
 
     render_consulta() {
