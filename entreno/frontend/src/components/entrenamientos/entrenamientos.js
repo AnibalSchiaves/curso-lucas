@@ -5,6 +5,7 @@ import axios from 'axios';
 import Util from '../utils';
 import Entrenamiento from '../../model/entrenamiento';
 import EjercicioRealizado from '../../model/ejercicioRealizado';
+import './entrenamientos.css';
 
 class Entrenamientos extends React.Component {
 
@@ -14,7 +15,9 @@ class Entrenamientos extends React.Component {
             entrenamientos : [],
             ejercicios: [],
             current: null,
-            modo: Modo.MODO_CONSULTA
+            modo: Modo.MODO_CONSULTA,
+            mes: Util.getMesActual(),
+            anio: Util.getAnioActual()
         }
         this.agregar = this.agregar.bind(this);
         this.editar = this.editar.bind(this);
@@ -24,6 +27,7 @@ class Entrenamientos extends React.Component {
         this.agregarEjercicio = this.agregarEjercicio.bind(this);
         this.guardar = this.guardar.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onChangeFiltro = this.onChangeFiltro.bind(this);
     }
 
     componentDidMount() {
@@ -31,7 +35,8 @@ class Entrenamientos extends React.Component {
     }
 
     consulta() {
-        axios.get(enviroment.api_url+'entrenamientos')
+        let params = "?anio="+this.state.anio+"&mes="+this.state.mes;
+        axios.get(enviroment.api_url+'entrenamientos'+params)
             .then(res => {
                 this.setState({
                     entrenamientos: res.data,
@@ -75,6 +80,25 @@ class Entrenamientos extends React.Component {
         return (
             <>
                 <h2>Mantenimiento de Entrenamientos</h2>
+                <div class="filtros">
+                    <label>Año</label>
+                    <input type="text" size={5} onChange={this.onChangeFiltro} defaultValue={this.state.anio} id="txtAnio" />
+                    <label> Mes</label>
+                    <select id="txtMes" onChange={this.onChangeFiltro} defaultValue={this.state.mes}>
+                        <option value={1}>Enero</option>
+                        <option value={2}>Febrero</option>
+                        <option value={3}>Marzo</option>
+                        <option value={4}>Abril</option>
+                        <option value={5}>Mayo</option>
+                        <option value={6}>Junio</option>
+                        <option value={7}>Julio</option>
+                        <option value={8}>Agosto</option>
+                        <option value={9}>Septiembre</option>
+                        <option value={10}>Noviembre</option>
+                        <option value={11}>Diciembre</option>
+                    </select>
+                    <input type="button" id="btnBuscar" onClick={this.consulta} value="Buscar"></input>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -332,6 +356,20 @@ class Entrenamientos extends React.Component {
                         this.consulta();
                     }); 
         }
+    }
+
+    onChangeFiltro() {
+        this.setState(prevState => {
+            return {
+                ejercicios: prevState.ejercicios,
+                current : prevState.current,
+                modo: prevState.modo,
+                filasDetalle: prevState.filasDetalle,
+                seriesDetalle: prevState.seriesDetalle,
+                anio: document.getElementById("txtAnio").value,
+                mes: document.getElementById("txtMes").value
+            }
+        })
     }
 
     onChange() {

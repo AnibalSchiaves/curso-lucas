@@ -14,6 +14,18 @@ class Util {
             mesStr = '0'+mesStr;
         return date.getUTCFullYear()+'-'+mesStr+'-'+date.getUTCDate();
     }
+
+    static getMesActual() {
+        let date = new Date();
+        let mes = date.getUTCMonth()+1;
+        return mes;
+    }
+
+    static getAnioActual() {
+        let date = new Date();
+        return date.getUTCFullYear();
+    }
+    
 }
 
 export default Util;
