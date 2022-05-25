@@ -32,7 +32,7 @@ exports.findAll = function(req, res) {
 
 exports.findById = function(req, res) {
     modelEntrenamiento.findById(req.params.id)
-    .populate("ejercicios.ejercicio")
+    //.populate("ejercicios.ejercicio")
     .exec(function(err, entrenamiento) {
         if (err)
             res.send(500, err.message);

@@ -58,9 +58,10 @@ class Entrenamientos extends React.Component {
                     <td>{Util.extraerFechaDeUTC(e.fecha)}</td>
                     <td>{e.tipo}</td>
                     <td>{e.volumenTotal}</td>
+                    <td>{e.duracionMinutos}</td>
                     <td>
-                        <button type='button' onClick={this.editar}>Modificar</button>
-                        <button type='button' onClick={this.eliminar}>Eliminar</button>
+                        <button type='button' data-id={e.id} onClick={this.editar}>Modificar</button>
+                        <button type='button' data-id={e.id} onClick={this.eliminar}>Eliminar</button>
                     </td>
                 </tr>
             });
@@ -81,6 +82,7 @@ class Entrenamientos extends React.Component {
                             <th>Fecha</th>
                             <th>Tipo</th>
                             <th>Volumen</th>
+                            <th>Duración (min)</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -89,7 +91,7 @@ class Entrenamientos extends React.Component {
                     </tbody>
                     <tfoot>
                         <tr>
-                        <td colSpan={5}>
+                        <td colSpan={6}>
                             <button type='button' onClick={this.agregar}>Nuevo</button>
                         </td>
                         </tr>
@@ -99,10 +101,56 @@ class Entrenamientos extends React.Component {
         )
     }
 
-    render_edicion() {
+    detallesEdicion(maxSeries) {
+        //Armo detalles si estoy editando
+        let detallesEdicion = this.state.current.ejercicios.map((ej,i) => {
+            let seriesDetalle = ej.series.map(
+                (serie,j) => <td key={j}>
+                    <input type="number" onChange={this.onChange} size="5" id={'txtSerie_'+i+'_'+j} defaultValue={serie} name="txtSerie_{i}_{j}"></input>
+                </td>
+            );
+            let difSeries = maxSeries-ej.series.length;
+            let seriesVacia = [];
+            for (let k=0;k<difSeries;k++) {
+                seriesVacia.push(k);    
+            }
+            let seriesDetalleVacias = seriesVacia.map(k => <td key={k+ej.series.length}>
+                    <input type="number" onChange={this.onChange} size="5" id={'txtSerie_'+i+'_'+(k+ej.series.length)} name="txtSerie_{i}_{k+ej.series.length}"></input>
+                </td>
+            );
+            return <tr key={i}>
+                <td>
+                    <select id={'txtEjercicio_'+i} name="txtEjercicio_{i}"
+                         defaultValue={ej.ejercicio}
+                         onChange={this.onChange}>
+                        <option>Seleccione...</option>
+                        {this.state.ejercicios.map(e => {
+                            return <option key={e.id} value={e.id}>{e.nombre}</option>
+                        })}
+                    </select>
+                </td>
+                {seriesDetalle}
+                {seriesDetalleVacias}
+                <td>
+                    <select id={'txtUnidad_'+i} name="txtUnidad_{i}"
+                         defaultValue={ej.unidad}
+                         onChange={this.onChange}>
+                        <option value="Rep">Repeticiones</option>
+                        <option value="Seg">Segundos</option>
+                    </select>
+                </td>
+            </tr>
+        });
+        return detallesEdicion;
+    }
+
+    detallesAgregados() {
+        //armo detalles agregados (no guardados todavía)
         let filas = [];
-        for (let i=0;i<this.state.filasDetalle;i++) {
-            filas.push(i);
+        let cantFilas = this.state.filasDetalle;
+        cantFilas -= this.state.current.ejercicios.length; 
+        for (let i=0;i<cantFilas;i++) {
+            filas.push(i+this.state.current.ejercicios.length);
         }
         let series = [];
         for (let j=0;j<this.state.seriesDetalle;j++) {
@@ -134,13 +182,30 @@ class Entrenamientos extends React.Component {
                 </td>
             </tr>
         });
+        return detalles;
+    }
+
+    render_edicion() {
+        //Determino series máximas
+        let maxSeries = 0;
+        this.state.current.ejercicios.forEach(ej => {
+            if (ej.series.length>maxSeries)
+                maxSeries = ej.series.length;
+        });
+        let detallesEdicion = this.detallesEdicion(maxSeries);
+        let detalles = this.detallesAgregados();
+        let series = [];
+        for (let j=0;j<this.state.seriesDetalle;j++) {
+            series.push(j);
+        }
         return (<>
             <h2>Mantenimiento de Entrenamientos - {this.state.modo===Modo.MODO_ALTA?'Agregar':'Editar'}</h2>
             <form>
                 <input type="hidden" id="txtId" name="txtId" defaultValue={this.state.current.id}></input>
                 <input type="number" id="txtNumero" name="txtNumero" onChange={this.onChange} placeholder='Número de entreno' defaultValue={this.state.current.numero}></input>
-                <input type="date" id="txtFecha" name="txtFecha" onChange={this.onChange} placeholder="Fecha" defaultValue={this.state.current.fecha}></input>
+                <input type="date" id="txtFecha" name="txtFecha" onChange={this.onChange} placeholder="Fecha" defaultValue={Util.extraerFechaISO8601DeUTC(this.state.current.fecha)}></input>
                 <input type="text" id="txtTipo" name="txtTipo" onChange={this.onChange} placeholder="Tipo de entreno" defaultValue={this.state.current.tipo}></input>
+                <input type="number" id="txtDuracionMinutos" name="txtDuracionMinutos" onChange={this.onChange} placeholder='Duración en minutos' defaultValue={this.state.current.duracionMinutos}></input>
                 <table>
                     <thead>
                     <tr>
@@ -150,6 +215,7 @@ class Entrenamientos extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
+                    {detallesEdicion}
                     {detalles}
                     </tbody>
                     <tfoot>
@@ -189,12 +255,43 @@ class Entrenamientos extends React.Component {
             })
     }
 
-    editar() {
-
+    editar(e) {
+        const rq1 = axios.get(enviroment.api_url+'ejercicios');
+        const rq2 = axios.get(enviroment.api_url+'entrenamientos/'+e.target.getAttribute("data-id"));
+        axios.all([rq1, rq2])
+            .then(axios.spread((...responses) => {
+                const res1 = responses[0];
+                const res2 = responses[1];
+                let maxSeries = 0;
+                for (let i=0;i<res2.data.ejercicios.length;i++) {
+                    if (maxSeries<res2.data.ejercicios[i].series.length)
+                        maxSeries = res2.data.ejercicios[i].series.length;
+                }
+                this.setState({
+                    ejercicios: res1.data,
+                    current : res2.data,
+                    modo: Modo.MODO_EDICION,
+                    filasDetalle: res2.data.ejercicios.length,
+                    seriesDetalle: maxSeries
+                });
+            }))
+            .catch(errors => {
+                console.log(errors);
+            });
     }
 
-    eliminar() {
-
+    eliminar(e) {
+        if (window.confirm("Esta seguro de borrar el entrenamiento")) {
+            axios.delete(enviroment.api_url+"entrenamientos/"+e.target.getAttribute("data-id"))
+                .then(res => {
+                    if (res.status===200) {
+                        alert("El entrenamiento ha sido borrado");
+                        this.consulta();
+                    } else {
+                        alert("Hubo un error al borrar el entrenamiento");
+                    }
+                });
+        }
     }
 
     agregarSerie() {
@@ -223,12 +320,17 @@ class Entrenamientos extends React.Component {
 
     guardar() {
         if (this.state.modo === Modo.MODO_ALTA) {
-            console.log(this.state.current);
             axios.post(enviroment.api_url+"entrenamientos", this.state.current)
                 .then(res => {
                         alert("El entrenamiento ha sido guardado");
                         this.consulta();
-                    });
+                    }); 
+        } else if (this.state.modo === Modo.MODO_EDICION) {
+            axios.put(enviroment.api_url+"entrenamientos/"+this.state.current.id, this.state.current)
+                .then(res => {
+                        alert("El entrenamiento ha sido guardado");
+                        this.consulta();
+                    }); 
         }
     }
 
@@ -238,8 +340,10 @@ class Entrenamientos extends React.Component {
             let series = [];
             for (let j=0;j<this.state.seriesDetalle;j++) {
                 let idSerie="txtSerie_"+i+"_"+j;
-                if (document.getElementById(idSerie).value!='') {
+                if (document.getElementById(idSerie).value!=='') {
                     series.push(document.getElementById(idSerie).value);
+                } else {
+                    series.push('');
                 }
             }
             let ejercicio = new EjercicioRealizado(
@@ -255,6 +359,7 @@ class Entrenamientos extends React.Component {
                 numero: document.getElementById("txtNumero").value,
                 fecha: document.getElementById("txtFecha").value,
                 tipo: document.getElementById("txtTipo").value,
+                duracionMinutos: document.getElementById("txtDuracionMinutos").value,
                 ejercicios: ejercicios
             }
         })
