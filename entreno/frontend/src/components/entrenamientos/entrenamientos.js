@@ -216,6 +216,8 @@ class Entrenamientos extends React.Component {
             if (ej.series.length>maxSeries)
                 maxSeries = ej.series.length;
         });
+        if (this.state.seriesDetalle>maxSeries)
+            maxSeries = this.state.seriesDetalle;
         let detallesEdicion = this.detallesEdicion(maxSeries);
         let detalles = this.detallesAgregados();
         let series = [];
