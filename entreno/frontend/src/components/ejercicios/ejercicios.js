@@ -3,6 +3,7 @@ import axios from 'axios';
 import './ejercicios.css';
 import enviroment from '../../enviroment';
 import Ejercicio from '../../model/ejercicio';
+import {Form, Field} from 'react-final-form';
 
 class Ejercicios extends React.Component {
 
@@ -22,17 +23,57 @@ class Ejercicios extends React.Component {
         this.consulta();
     }
 
+    onSubmit = async values => {
+        if (this.state.modo === Ejercicio.MODO_ALTA) {
+            axios.post(enviroment.api_url+"ejercicios", values)
+                .then(res => {
+                        alert("El ejercicio ha sido guardado");
+                        this.consulta();
+                    });
+        } else if (this.state.modo === Ejercicio.MODO_EDICION) {
+            axios.put(enviroment.api_url+"ejercicios/"+values.id, values)
+                .then(res => {
+                        alert("El ejercicio ha sido guardado");
+                        this.consulta();
+                    });
+        }
+    }
+
+    required = value => (value ? undefined : 'Requerido')
+
     render_edicion() {
         return (<>
             <h2>Mantenimiento de Ejercicios</h2>
-            <form>
-                <input type="hidden" id="txtId" name="txtId" defaultValue={this.state.current.id}></input>
-                <input type="text" id="txtCodigo" name="txtCodigo" placeholder="Ingrese el código" onChange={this.onChange.bind(this)} defaultValue={this.state.current.codigo}></input>
-                <input type="text" id="txtNombre" name="txtNombre" placeholder="Ingrese el nombre" onChange={this.onChange.bind(this)} defaultValue={this.state.current.nombre}></input>
-                <textarea id="txtDescripcion" name="txtDescripcion" placeholder="Ingrese la descripción" onChange={this.onChange.bind(this)} defaultValue={this.state.current.descripcion}></textarea>
-                <button type="button" onClick={this.guardar}>Guardar</button>
+            <Form
+                onSubmit={this.onSubmit}
+                initialValues={{
+                    id: this.state.current.id,
+                    codigo: this.state.current.codigo, 
+                    nombre: this.state.current.nombre, 
+                    descripcion: this.state.current.descripcion
+                }}
+                render={({handleSubmit, form, submitting, pristine, values }) => (
+            <form onSubmit={handleSubmit}>
+                <Field name="id" component="input" type="hidden" />
+                <Field name="codigo" validate={this.required}>
+                    {({ input, meta }) => (
+                        <div>
+                            <input {...input} type="text" placeholder="Ingrese el código" className={(meta.error && meta.touched)?"error":""}  />
+                        </div>
+                    )}
+                </Field>
+                <Field name="nombre" validate={this.required}>
+                    {({ input, meta }) => (
+                        <div>
+                            <input {...input} type="text" placeholder="Ingrese el nombre" className={(meta.error && meta.touched)?"error":""} />
+                        </div>
+                    )}
+                </Field> 
+                <Field name="descripcion" component="textarea" type="text" placeholder="Ingrese la descripción" />
+                <button type="submit" disabled={submitting || pristine}>Guardar</button>
                 <button type="button" onClick={this.consulta}>Cancelar</button>
             </form>
+                )} />
         </>);
     }
 

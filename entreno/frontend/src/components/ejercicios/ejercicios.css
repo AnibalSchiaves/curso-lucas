@@ -16,3 +16,9 @@ form input, form textarea {
     display: block;
     margin: auto;
 }
+
+.error {
+    border-radius: 0.2em;
+    border: 1px solid red;
+    padding: 0.2em;
+}
