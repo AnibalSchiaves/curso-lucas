@@ -3,6 +3,7 @@ import './ejercicios.css';
 import axios from "axios";
 import enviroment from "../../enviroment";
 import { Field, Form } from "react-final-form";
+import NavBar from "../navbar/navbar";
 
 function Ejercicios2() {
 
@@ -96,6 +97,7 @@ function Ejercicios2() {
         }
         return (
             <>
+                <NavBar></NavBar>
                 <h2>Mantenimiento de Ejercicios</h2>
                 <table>
                     <thead>
@@ -141,6 +143,7 @@ function Ejercicios2() {
 
     const render_edicion = () => {
         return (<>
+            <NavBar></NavBar>
             <h2>Mantenimiento de Ejercicios</h2>
             <Form
                 onSubmit={onSubmit}
