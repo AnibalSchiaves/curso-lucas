@@ -6,6 +6,8 @@ import Util from '../utils';
 import Entrenamiento from '../../model/entrenamiento';
 import EjercicioRealizado from '../../model/ejercicioRealizado';
 import './entrenamientos.css';
+import CheckAuthContext from '../../checkauthcontext';
+import NavBar from '../navbar/navbar';
 
 class Entrenamientos extends React.Component {
 
@@ -79,8 +81,10 @@ class Entrenamientos extends React.Component {
         }
         return (
             <>
+                <CheckAuthContext></CheckAuthContext>
+                <NavBar></NavBar>
                 <h2>Mantenimiento de Entrenamientos</h2>
-                <div class="filtros">
+                <div className="filtros">
                     <label>Año</label>
                     <input type="text" size={5} onChange={this.onChangeFiltro} defaultValue={this.state.anio} id="txtAnio" />
                     <label> Mes</label>
@@ -225,6 +229,7 @@ class Entrenamientos extends React.Component {
             series.push(j);
         }
         return (<>
+            <NavBar></NavBar>
             <h2>Mantenimiento de Entrenamientos - {this.state.modo===Modo.MODO_ALTA?'Agregar':'Editar'}</h2>
             <form>
                 <input type="hidden" id="txtId" name="txtId" defaultValue={this.state.current.id}></input>

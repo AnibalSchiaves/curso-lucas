@@ -4,6 +4,7 @@ import axios from "axios";
 import enviroment from "../../enviroment";
 import { Field, Form } from "react-final-form";
 import NavBar from "../navbar/navbar";
+import CheckAuthContext from "../../checkauthcontext";
 
 function Ejercicios2() {
 
@@ -97,6 +98,7 @@ function Ejercicios2() {
         }
         return (
             <>
+                <CheckAuthContext></CheckAuthContext>
                 <NavBar></NavBar>
                 <h2>Mantenimiento de Ejercicios</h2>
                 <table>
