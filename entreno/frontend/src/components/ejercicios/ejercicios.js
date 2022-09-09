@@ -24,6 +24,7 @@ class Ejercicios extends React.Component {
     }
 
     onSubmit = async values => {
+        document.getElementById('btnGuardar').disabled = false;
         if (this.state.modo === Ejercicio.MODO_ALTA) {
             axios.post(enviroment.api_url+"ejercicios", values)
                 .then(res => {
@@ -70,7 +71,7 @@ class Ejercicios extends React.Component {
                     )}
                 </Field> 
                 <Field name="descripcion" component="textarea" type="text" placeholder="Ingrese la descripción" />
-                <button type="submit" disabled={submitting || pristine}>Guardar</button>
+                <button id='btnGuardar' type="submit" disabled={submitting || pristine}>Guardar</button>
                 <button type="button" onClick={this.consulta}>Cancelar</button>
             </form>
                 )} />

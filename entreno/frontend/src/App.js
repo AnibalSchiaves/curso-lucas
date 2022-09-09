@@ -3,7 +3,8 @@ import './App.css';
 import Home from './components/home/home';
 import Login from './components/login/login';
 import Ejercicios from './components/ejercicios/ejercicios2';
-import Entrenamientos from './components/entrenamientos/entrenamientos';
+import Entrenamientos from './components/entrenamientos/entrenamientos2';
+import NavBar from './components/navbar/navbar';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import AuthProvider from './authprovider';
 import QuienesSomos from './components/quienesomos/quienessomos';
@@ -22,6 +23,8 @@ function App() {
           <Route path='/' element={<Home />}></Route>
           <Route path='/login' element={<Login />}></Route>
           <Route path="/ejercicios" element={<Ejercicios />}></Route>
+          <Route path="/ejercicios/nuevo" element={<Ejercicios />}></Route>
+          <Route path="/ejercicios/editar/:id" element={<Ejercicios />}></Route>
           <Route path="/entrenamientos" element={<Entrenamientos />}></Route>
           <Route path="/quienessomos" element={<QuienesSomos/>}></Route>
           <Route path="/salir" element={<Logout/>}></Route>
