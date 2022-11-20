@@ -7,6 +7,7 @@ import './entrenamientos.css';
 import { useEffect } from "react";
 import EjercicioRealizado from "../../model/ejercicioRealizado";
 import CheckAuthContext from "../../checkauthcontext";
+import NavBar from "../navbar/navbar";
 
 export default function Entrenamientos2  () {
     const MODO_CONSULTA = "consulta";
@@ -101,6 +102,7 @@ export default function Entrenamientos2  () {
         return (
             <>
                 <CheckAuthContext></CheckAuthContext>
+                <NavBar></NavBar>
                 <h2>Mantenimiento de Entrenamientos</h2>
                 <div className="filtros">
                     <label>Año</label>
