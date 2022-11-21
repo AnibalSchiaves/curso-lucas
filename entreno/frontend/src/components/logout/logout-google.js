@@ -10,12 +10,6 @@ export default function Logout() {
     const [user, setUser] = useContext(AuthContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        return () => {
-          setUser({}); // This worked for me
-        };
-    }, []);
-
     function logOut() {
         setUser(undefined);
         navigate('/');

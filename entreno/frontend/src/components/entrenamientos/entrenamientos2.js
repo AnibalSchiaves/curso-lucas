@@ -6,10 +6,13 @@ import Entrenamiento from "../../model/entrenamiento";
 import './entrenamientos.css';
 import { useEffect } from "react";
 import EjercicioRealizado from "../../model/ejercicioRealizado";
-import CheckAuthContext from "../../checkauthcontext";
 import NavBar from "../navbar/navbar";
+import useUserLogged from "../../checkuserlogged";
 
 export default function Entrenamientos2  () {
+
+    const user = useUserLogged();
+
     const MODO_CONSULTA = "consulta";
     const MODO_ALTA = "alta";
     const MODO_EDICION = "edicion";
@@ -65,13 +68,15 @@ export default function Entrenamientos2  () {
 
     useEffect(
         () => {
-            console.log("se va a ejecutar el efecto");
-            if (modo === MODO_CONSULTA) {
-                console.log("se va a llamar a la api");
-                axios.get(enviroment.api_url+"entrenamientos")
-                .then(res => {
-                    setEntrenamientos(res.data);
-                });
+            if (user) {
+                console.log("se va a ejecutar el efecto");
+                if (modo === MODO_CONSULTA) {
+                    console.log("se va a llamar a la api");
+                    axios.get(enviroment.api_url+"entrenamientos")
+                    .then(res => {
+                        setEntrenamientos(res.data);
+                    });
+                }
             }
         }, [modo]
     );
@@ -101,7 +106,6 @@ export default function Entrenamientos2  () {
         }
         return (
             <>
-                <CheckAuthContext></CheckAuthContext>
                 <NavBar></NavBar>
                 <h2>Mantenimiento de Entrenamientos</h2>
                 <div className="filtros">
