@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
 import NavBar from '../navbar/navbar';
 import AuthContext from "../../authcontext";
-import CheckAuthContext from "../../checkauthcontext";
+import useUserLogged from "../../checkuserlogged";
 
 export default function Home() {
-    const [user] = useContext(AuthContext);
+    //const [user] = useContext(AuthContext);
+    const user = useUserLogged();
     return (
         <>
             <NavBar></NavBar>
-            <CheckAuthContext></CheckAuthContext>
-            <h2>Bienvenido {user==null?'':user.nombre} {user==null?'':user.apellido}</h2>
+            <h2>Bienvenido {user==null?'':user.name} {user==null?'':user.nombre} {user==null?'':user.apellido}</h2>
         </>
     )
 } 

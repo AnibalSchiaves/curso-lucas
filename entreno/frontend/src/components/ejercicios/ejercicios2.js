@@ -4,10 +4,12 @@ import axios from "axios";
 import enviroment from "../../enviroment";
 import { Field, Form } from "react-final-form";
 import NavBar from "../navbar/navbar";
-import CheckAuthContext from "../../checkauthcontext";
+import useUserLogged from "../../checkuserlogged";
 
 function Ejercicios2() {
 
+    const user = useUserLogged();
+    
     const MODO_CONSULTA = "consulta";
     const MODO_ALTA = "alta";
     const MODO_EDICION = "edicion";
@@ -58,13 +60,18 @@ function Ejercicios2() {
 
     useEffect(
         () => {
-            console.log("se va a ejecutar el efecto");
-            if (modo === MODO_CONSULTA) {
-                console.log("se va a llamar a la api");
-                axios.get(enviroment.api_url+"ejercicios")
-                .then(res => {
-                    setEjercicios(res.data);
-                });
+            if (user) {
+                console.log("se va a ejecutar el efecto");
+                if (modo === MODO_CONSULTA) {
+                    console.log("se va a llamar a la api");
+                    axios.get(enviroment.api_url+"ejercicios")
+                    .then(res => {
+                        setEjercicios(res.data);
+                    });
+                }
+                return () => {
+                    setEjercicios(null);
+                }
             }
         }, [modo]
     );
@@ -98,7 +105,6 @@ function Ejercicios2() {
         }
         return (
             <>
-                <CheckAuthContext></CheckAuthContext>
                 <NavBar></NavBar>
                 <h2>Mantenimiento de Ejercicios</h2>
                 <table>
@@ -180,12 +186,15 @@ function Ejercicios2() {
         </>);
     }
     
-    if (modo === MODO_ALTA || modo === MODO_EDICION) {
-        return render_edicion();
+    if (user) {
+        if (modo === MODO_ALTA || modo === MODO_EDICION) {
+            return render_edicion();
+        } else {
+            return render_consulta();
+        }
     } else {
-        return render_consulta();
+        return (<></>)
     }
-
 }
 
 export default Ejercicios2;

@@ -1,14 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
 import Home from './components/home/home';
-import Login from './components/login/login';
+import Login from './components/login/login-google';
 import Ejercicios from './components/ejercicios/ejercicios2';
 import Entrenamientos from './components/entrenamientos/entrenamientos2';
 import NavBar from './components/navbar/navbar';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import AuthProvider from './authprovider';
 import QuienesSomos from './components/quienesomos/quienessomos';
-import Logout from './components/logout/logout';
+import Logout from './components/logout/logout-google';
 
 function App() {
   return (
