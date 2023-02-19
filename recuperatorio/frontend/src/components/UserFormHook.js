@@ -4,6 +4,7 @@ import { saveUser, fetchUser } from "../reducers/usersSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import "./UserForm.css";
 
 export default function({id}) {
@@ -24,41 +25,35 @@ export default function({id}) {
         contrasenia:''
     }
 
-    const [userData, setUserData] = useState(emptyUser);
+    const {register, formState: {errors}, handleSubmit, reset} = useForm({
+        defaultValues: {
+            ...emptyUser
+        }
+    });
 
     useEffect(()=>{
         async function getUser() {
             if (id) {
                 const response = await dispatch(fetchUser(id)).unwrap();
                 delete response._id;
-                setUserData(response);
-            } else {
-                setUserData(emptyUser);
+                reset(response);
             }
             setExito(null);
         }
         getUser();
     },[id]);
 
-    const handleChange = (id) => {
-        if (exito)
-            setExito(null);
-        userData[id] = document.getElementById(id).value;
-        setUserData({...userData});
-    }
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const submit = async (data,e) => {
         try {
             const param = {
                 id,
-                user: userData
+                user: data
             };
             const response = await dispatch(saveUser(param)).unwrap();
             if (!response.error) {
                 //setExito("El usuario se grabó correctamente");
                 alert("El usuario se grabó correctamente");
-                setUserData(emptyUser);
+                e.target.reset();
                 navigate("/usuarios",{replace:false});
             }
             
@@ -71,13 +66,12 @@ export default function({id}) {
     const navigate = useNavigate();
 
     const handleReset = () => {
-        setUserData(emptyUser);
-        setExito(null);
+        reset(emptyUser);
         navigate("/usuarios",{replace:true});
     }
 
     return (
-        <form>
+        <form onSubmit={handleSubmit(submit)}>
             <fieldset>
             <legend>Alta/Modificación de Usuario</legend>
             <div className="row exito">
@@ -91,26 +85,25 @@ export default function({id}) {
                 <input 
                     type="text" 
                     id="nombre" 
-                    value={userData['nombre']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("nombre",{ required: true})}>
                 </input>
+                {errors.nombre?.type === 'required' && <p role="alert">Nombre es requerido</p>}
             </div>
             <div className="row">
                 <label>Apellido</label>
                 <input 
                     type="text" 
                     id="apellido" 
-                    value={userData['apellido']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("apellido", {required: true})}>
                 </input>
+                {errors.apellido?.type === 'required' && <p role="alert">Apellido es requerido</p>}
             </div>
             <div className="row">
                 <label>DNI</label>
                 <input 
                     type="number" 
                     id="dni" 
-                    value={userData['dni']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("dni")}>
                 </input>
             </div>
             <div className="row">
@@ -118,8 +111,7 @@ export default function({id}) {
                 <input 
                     type="date" 
                     id="fechaNacimiento" 
-                    value={userData['fechaNacimiento']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("fechaNacimiento")}>
                 </input>
             </div>
             <div className="row">
@@ -127,8 +119,7 @@ export default function({id}) {
                 <input 
                     type="text" 
                     id="nacionalidad" 
-                    value={userData['nacionalidad']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("nacionalidad")}>
                 </input>
             </div>
             <div className="row">
@@ -136,8 +127,7 @@ export default function({id}) {
                 <input 
                     type="email" 
                     id="email" 
-                    value={userData['email']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("email")}>
                 </input>
             </div>
             <div className="row">
@@ -145,12 +135,11 @@ export default function({id}) {
                 <input 
                     type="password" 
                     id="contrasenia" 
-                    value={userData['contrasenia']} 
-                    onChange={(event)=>{handleChange(event.target.id)}}>
+                    {...register("contrasenia")}>
                 </input>
             </div>
             <div className="row">
-                <button type="button" onClick={handleSubmit}>Guardar</button>
+                <button type="submit">Guardar</button>
                 <button type="button" onClick={handleReset}>Cancelar</button>
             </div>
             </fieldset>
