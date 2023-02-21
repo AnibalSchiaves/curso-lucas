@@ -36,6 +36,7 @@ export default function({id}) {
             if (id) {
                 const response = await dispatch(fetchUser(id)).unwrap();
                 delete response._id;
+                response.fechaNacimiento = response.fechaNacimiento.substring(0,10);
                 reset(response);
             }
             setExito(null);
