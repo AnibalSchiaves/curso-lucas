@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <header className='App-header'>
-        Header de la app
+        <h1>Recuperatorio Modelos Computacionales de Gestión Administrativa</h1>
       </header>
       <BrowserRouter>
         <navbar>
@@ -25,7 +25,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <footer className='App-footer'>
-        Footer de la app
+        <span>Realizado por Anibal Schiaves</span>
       </footer>
     </div>
   );
