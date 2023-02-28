@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Input from "../controls/Input";
+import Button from "../controls/Button";
 import "./UserForm.css";
 
 export default function({id}) {
@@ -81,67 +83,58 @@ export default function({id}) {
             <div className="row error">
                 {error?<p>{error}</p>:''}
             </div>
-            <div className="row">
-                <label>Nombre</label>
-                <input 
-                    type="text" 
+            <Input  type="text" 
                     id="nombre" 
-                    {...register("nombre",{ required: true})}>
-                </input>
-                {errors.nombre?.type === 'required' && <p role="alert">Nombre es requerido</p>}
-            </div>
-            <div className="row">
-                <label>Apellido</label>
-                <input 
-                    type="text" 
+                    label="Nombre" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="text" 
                     id="apellido" 
-                    {...register("apellido", {required: true})}>
-                </input>
-                {errors.apellido?.type === 'required' && <p role="alert">Apellido es requerido</p>}
-            </div>
-            <div className="row">
-                <label>DNI</label>
-                <input 
-                    type="number" 
+                    label="Apellido" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="number" 
                     id="dni" 
-                    {...register("dni")}>
-                </input>
-            </div>
-            <div className="row">
-                <label>Fecha Nacimiento</label>
-                <input 
-                    type="date" 
+                    label="DNI" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="date" 
                     id="fechaNacimiento" 
-                    {...register("fechaNacimiento")}>
-                </input>
-            </div>
-            <div className="row">
-                <label>Nacionalidad</label>
-                <input 
-                    type="text" 
+                    label="Fecha Nacimiento" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="text" 
                     id="nacionalidad" 
-                    {...register("nacionalidad")}>
-                </input>
-            </div>
-            <div className="row">
-                <label>Email</label>
-                <input 
-                    type="email" 
+                    label="Nacionalidad" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="email" 
                     id="email" 
-                    {...register("email")}>
-                </input>
-            </div>
-            <div className="row">
-                <label>Contraseña</label>
-                <input 
-                    type="password" 
+                    label="Email" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
+            <Input  type="password" 
                     id="contrasenia" 
-                    {...register("contrasenia")}>
-                </input>
-            </div>
+                    label="Contraseña" 
+                    register={register} 
+                    registerOptions={{required:true}}
+                    errors={errors}>
+            </Input>
             <div className="row">
-                <button type="submit">Guardar</button>
-                <button type="button" onClick={handleReset}>Cancelar</button>
+                <Button type="submit">Guardar</Button>
+                <Button type="button" onClick={handleReset}>Cancelar</Button>
             </div>
             </fieldset>
         </form>
