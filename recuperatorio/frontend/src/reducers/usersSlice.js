@@ -1,10 +1,15 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const URL_API = process.env.REACT_APP_URL_API;
+const PATH_USERS = process.env.REACT_APP_PATH_USERS;
+
 export const fetchUsers = createAsyncThunk(
     "users/fetchUsers",
     async () => {
-        const response = await axios.get("http://localhost:3001/users")
+        //const response = await axios.get("http://localhost:3001/users")
+        console.log(URL_API + PATH_USERS);
+        const response = await axios.get(URL_API + PATH_USERS)
         return response.data;
     }
 );
@@ -12,7 +17,8 @@ export const fetchUsers = createAsyncThunk(
 export const fetchUser = createAsyncThunk(
     "users/fetchUser",
     async (id) => {
-        const response = await axios.get("http://localhost:3001/users/"+id)
+        //const response = await axios.get("http://localhost:3001/users/"+id)
+        const response = await axios.get(URL_API + PATH_USERS + id)
         return response.data;
     }
 );
@@ -20,7 +26,8 @@ export const fetchUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
     "users/deleteUsers",
     async (id) => {
-        const response = await axios.delete("http://localhost:3001/users/"+id)
+        //const response = await axios.delete("http://localhost:3001/users/"+id)
+        const response = await axios.delete(URL_API + PATH_USERS + id)
         return response.data;
     }
 );
@@ -28,7 +35,8 @@ export const deleteUser = createAsyncThunk(
 export const saveUser = createAsyncThunk(
     "users/saveUsers",
     async ({id, user}) => {
-        let url = "http://localhost:3001/users/";
+        //let url = "http://localhost:3001/users/";
+        let url = URL_API + PATH_USERS;
         let response;
         try {
             if (id) {
