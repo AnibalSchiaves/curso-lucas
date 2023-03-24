@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import User from "./User";
 import UserForm from "./UserFormHook";
 import { useParams, useNavigate } from "react-router-dom";
+import NavBar from "./NavBar";
 
 export default function() {
     const usuarios = useSelector(getUsers);
@@ -34,6 +35,8 @@ export default function() {
     }
 
     return (
+        <>
+        <NavBar></NavBar>
         <div>
             <table>
                 <thead>
@@ -52,5 +55,6 @@ export default function() {
             <br></br>
             <UserForm id={id}></UserForm>
         </div>
+        </>
     )
 }

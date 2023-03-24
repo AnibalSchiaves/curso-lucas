@@ -6,10 +6,16 @@ const PATH_USERS = process.env.REACT_APP_PATH_USERS;
 
 export const fetchUsers = createAsyncThunk(
     "users/fetchUsers",
-    async () => {
+    async (payload, {getState}) => {
         //const response = await axios.get("http://localhost:3001/users")
-        console.log(URL_API + PATH_USERS);
-        const response = await axios.get(URL_API + PATH_USERS)
+        const state = getState(); /*solo lo agrego para mostrar como acceder al state desde thunk */
+        let config = {
+            headers: {
+                authorization: `Bearer ${state.auth.token}`
+            }
+        }
+        const response = await axios.get(URL_API + PATH_USERS, config);
+        //const response = await axios.get(URL_API + PATH_USERS);
         return response.data;
     }
 );
