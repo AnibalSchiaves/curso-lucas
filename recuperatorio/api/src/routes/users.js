@@ -1,21 +1,22 @@
 import {findAll, findOne, findByEmail, findByDni, save, update, clear} from "../controllers/users.js";
 import express from "express";
+import { validateToken } from "../controllers/auth.js";
 
 var router = express.Router();
 
 router.route("/users")
-    .get(findAll)
-    .post(save)
+    .get(validateToken, findAll)
+    .post(validateToken, save)
 
 router.route("/users/:id")
-    .get(findOne)
-    .delete(clear)
-    .patch(update)
+    .get(validateToken,findOne)
+    .delete(validateToken, clear)
+    .patch(validateToken, update)
 
 router.route("/users/byEmail/:email")
-    .get(findByEmail)
+    .get(validateToken, findByEmail)
 
 router.route("/users/byDni/:dni")
-    .get(findByDni)
+    .get(validateToken, findByDni)
 
 export default router;
