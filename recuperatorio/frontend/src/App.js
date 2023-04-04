@@ -13,6 +13,7 @@ function App() {
       <header className='App-header'>
         <h1>Recuperatorio Modelos Computacionales de Gestión Administrativa</h1>
       </header>
+      <section>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}></Route> 
@@ -22,8 +23,10 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
         </Routes>
       </BrowserRouter>
+      </section>
+      <div class="footer-fix"></div>
       <footer className='App-footer'>
-        <span>Realizado por Anibal Schiaves</span>
+        <span>&copy; by Anibal Schiaves</span>
       </footer>
     </div>
   );

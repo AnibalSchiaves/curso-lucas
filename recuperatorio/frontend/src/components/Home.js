@@ -13,11 +13,11 @@ export default function() {
         <>
         <NavBar></NavBar>
         <div>
-            <h3>
-                <p>Bienvenido {user?(user.nombre):'usuario'}</p>
-                <p>Este es el trabajo práctivo para el recuperatorio de Lucas Cabrera
-                de la materia Modelos Computacionales para la Administración</p>
-            </h3>
+            <div>
+                <h3>Bienvenido {user?(user.nombre):'usuario'}</h3>
+                <h4>Este es el trabajo práctivo para el recuperatorio de Lucas Cabrera
+                de la materia Modelos Computacionales para la Administración</h4>
+            </div>
         </div>
         </>
     )

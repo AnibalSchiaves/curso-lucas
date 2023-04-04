@@ -38,6 +38,8 @@ export default function() {
         <>
         <NavBar></NavBar>
         <div>
+            <fieldset>
+            <legend>Lista de Usuarios</legend>
             <table>
                 <thead>
                     <tr key={0}>
@@ -52,7 +54,7 @@ export default function() {
                     {usuarios.map(u => <User onDelete={() => confirmAndDeleteUser(u._id)} onEdit={() => editUser(u._id)} user={u} key={u._id}></User>)}
                 </tbody>
             </table>
-            <br></br>
+            </fieldset>
             <UserForm id={id}></UserForm>
         </div>
         </>
