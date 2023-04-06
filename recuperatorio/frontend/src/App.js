@@ -24,7 +24,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       </section>
-      <div class="footer-fix"></div>
+      <div className="footer-fix"></div>
       <footer className='App-footer'>
         <span>&copy; by Anibal Schiaves</span>
       </footer>

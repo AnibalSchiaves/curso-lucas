@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { saveToken, getToken as getPersistedToken, saveUser, getUser as getPersistedUser, deleteUserAndToken } from "../utils/token";
 
 const URL_API = process.env.REACT_APP_URL_API;
 const PATH_LOGIN = process.env.REACT_APP_PATH_LOGIN;
+const PERSIST_TOKEN = (process.env.REACT_APP_PERSIST_TOKEN === 'true');
 
 export const login = createAsyncThunk(
     "auth/login",
@@ -22,17 +24,32 @@ export const login = createAsyncThunk(
     }  
 );
 
+const getPersistedTokenAndInit = () => {
+    const token = getPersistedToken();
+    console.log(token);
+    if (token) {
+        console.log('entro aca');
+        axios.defaults.headers.common['authorization'] = `Bearer ${token}`;
+        return token;
+    } else {
+        return null;
+    }
+}
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        token: null,
-        user: null
+        token: PERSIST_TOKEN?getPersistedTokenAndInit():null,
+        user: PERSIST_TOKEN?getPersistedUser():null
     },
     reducers: {
         logout: (state, action) => {
             state.token = null;
             state.user = null;
             axios.defaults.headers.common['authorization'] = '';
+            if (PERSIST_TOKEN) {
+                deleteUserAndToken();
+            }
         }
     },
     extraReducers(builder) {
@@ -41,6 +58,10 @@ const authSlice = createSlice({
                 state.token = action.payload.token;
                 state.user  = action.payload.usuario;
                 axios.defaults.headers.common['authorization'] = `Bearer ${state.token}`;
+                if (PERSIST_TOKEN) {
+                    saveToken(state.token);
+                    saveUser(state.user);
+                }
             })
     }
 });

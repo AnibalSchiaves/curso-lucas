@@ -11,7 +11,7 @@ export default function() {
           <ul>
             <li><NavLink to="/">Home</NavLink></li>
             <li><NavLink to="/usuarios">Usuarios</NavLink></li>
-            {user?<li><NavLink to="/"><a  onClick={() => {dispatch(logout())}}>Salir</a></NavLink></li>:''}
+            {user?<li><NavLink to="/" onClick={() => {dispatch(logout())}}>Salir</NavLink></li>:''}
           </ul>
         </navbar>
         
