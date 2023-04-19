@@ -75,22 +75,7 @@ section fieldset {
   margin-top: 1.5em;
 }
 
-form .row{
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
+fieldset legend {
+  margin-bottom: 0.5em;
 }
 
-.row .content-input {
-  min-width: 300px;
-}
-
-.content-input input{
-  text-align: left;
-}
-
-form label {
-  display: inline-block;
-  min-width: 100px;
-  text-align: left;
-}

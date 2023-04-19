@@ -1,5 +1,6 @@
 import React from "react";
 import { formatHumanDate } from "../util";
+import Button from "../controls/Button";
 
 export default function({user, onDelete, onEdit}) {
     return <tr key={user._id}>
@@ -8,8 +9,8 @@ export default function({user, onDelete, onEdit}) {
         <td>{user.dni}</td>
         <td>{formatHumanDate(user.fechaNacimiento)}</td>
         <td>
-            <button type="button" onClick={onDelete}>Eliminar</button>
-            <button type="button" onClick={onEdit}>Modificar</button>
+            <Button type="button" onClick={onDelete}>Eliminar</Button>
+            <Button type="button" onClick={onEdit}>Modificar</Button>
         </td>
     </tr>
 }
