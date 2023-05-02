@@ -6,7 +6,8 @@ var router = express.Router();
 
 router.route("/users")
     .get(validateToken, findAll)
-    .post(validateToken, save)
+    //.post(validateToken, save)
+    .post(save);
 
 router.route("/users/:id")
     .get(validateToken,findOne)

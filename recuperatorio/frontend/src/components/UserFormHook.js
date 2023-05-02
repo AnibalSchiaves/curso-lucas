@@ -9,7 +9,7 @@ import Input from "../controls/Input";
 import Button from "../controls/Button";
 import "./UserForm.css";
 
-export default function({id}) {
+export default function({id, title = "Alta/Modificación de Usuario"}) {
 
     const dispatch = useDispatch();
 
@@ -76,7 +76,7 @@ export default function({id}) {
     return (
         <form onSubmit={handleSubmit(submit)}>
             <fieldset>
-            <legend>Alta/Modificación de Usuario</legend>
+            <legend>{title}</legend>
             <div className="row exito">
                 {exito?<p>{exito}</p>:''}
             </div>

@@ -6,6 +6,7 @@ import Home from './components/Home';
 import UsersList from './components/UsersList';
 import {NavLink} from 'react-router-dom';
 import Login from './components/Login';
+import Registro from './components/Registro';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/usuarios" element={<PrivateRoute><UsersList/></PrivateRoute>}></Route>
           <Route path="/usuarios/:id" element={<UsersList />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/registro" element={<Registro />}></Route>
         </Routes>
       </BrowserRouter>
       </section>

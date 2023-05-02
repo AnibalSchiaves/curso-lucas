@@ -34,6 +34,10 @@ export default function() {
         }
     }
 
+    const registrarse = () => {
+        navigate("/registro");
+    }
+
     return (
         <form onSubmit={handleSubmit(submit)}>
             <fieldset>
@@ -59,6 +63,11 @@ export default function() {
                 />
                 <div className="row">
                     <Button type="submit">Ingresar</Button>
+                </div>
+                <hr></hr>
+                <div className="row">
+                    <p>Si no posee usuario registrese.</p>
+                    <Button type="button" onClick={registrarse}>Registrarse</Button>
                 </div>
             </fieldset>
         </form>
