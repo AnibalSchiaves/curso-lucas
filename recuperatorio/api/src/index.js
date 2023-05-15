@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(router);
 
-dotenv.config({path:"../.env"});
+dotenv.config({path:"./.env"});
 
 let uriMongo = process.env.DBURL;//"mongodb://localhost/users"*/
 
