@@ -22,5 +22,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.0.1"
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": "14.4"
+  }
 }

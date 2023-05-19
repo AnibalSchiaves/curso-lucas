@@ -13,14 +13,14 @@ app.use(router);
 dotenv.config({path:"./.env"});
 
 let uriMongo = process.env.DBURL;//"mongodb://localhost/users"*/
-
+let puerto = process.env.PORT;
 mongoose.connect(uriMongo,
  {useNewUrlParser: true, useUnifiedTopology: true}, 
  function(err,res) {
     if (err) {
         console.log(`Hubo un error al conectar a la base de datos. Error: ${err}`);
     }
-    app.listen(3001, function() {
+    app.listen(puerto, function() {
         console.log("api de usuarios iniciada en puerto 3001");
     })
 })
